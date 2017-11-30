@@ -13,6 +13,7 @@ public class DayNightCycle : MonoBehaviour {
     public float transYMaxSun = 6f;
     public float transYToggleSun = 0.38f;
     public GameObject moon;
+    public Sprite[] moonSprites;
     public GameObject[] mountains;
     public Color[] mountainColors;
     public GameObject[] foregroundObjects;
@@ -22,6 +23,7 @@ public class DayNightCycle : MonoBehaviour {
     public float transYToggleMoon = 0.13f;
     public GameObject background;
     public GameObject stars;
+    public GameObject[] lights;
 
     public static float timeOfDay;
     private int day;
@@ -47,6 +49,7 @@ public class DayNightCycle : MonoBehaviour {
         yDiffSun = transYMaxSun - transYMinSun;
         yDiffMoon = transYMaxMoon - transYMinMoon;
         day = 0;
+        moon.GetComponent<SpriteRenderer>().sprite = moonSprites[0];
         if (timeOfDay > 21600 && timeOfDay <= 43200)
         {
             fracSun = (timeOfDay - 21600) / 21600;
@@ -153,9 +156,34 @@ public class DayNightCycle : MonoBehaviour {
             timeOfDay = 0;
             day++;
         }
+        if (day % 5 == 0 || day % 5 == 4)
+        {
+            if (hasMoonSet)
+            {
+                moon.GetComponent<SpriteRenderer>().sprite = moonSprites[0];
+            }
+        } else if (day % 5 == 1 || day % 5 == 3)
+        {
+            if (hasMoonSet)
+            {
+                moon.GetComponent<SpriteRenderer>().sprite = moonSprites[1];
+            }
+        } else if (day % 5 == 2)
+        {
+            if (hasMoonSet)
+            {
+                moon.GetComponent<SpriteRenderer>().sprite = moonSprites[2];
+            }
+        }
         SunMoonPosition();
-        ColorChangeBackgroundWithTime();
-        ColorChangeObjects();
+        if (!WeatherCycle.weatherChanging)
+        {
+            ColorChangeBackgroundWithTime();
+            ColorChangeObjects();
+        } else if (WeatherCycle.type == 1)
+        {
+            ColorChangeObjects();
+        }
         if (timeOfDay >= 56000)
         {
             stars.SetActive(true);
@@ -343,5 +371,181 @@ public class DayNightCycle : MonoBehaviour {
             }
         }
 
+    }
+
+    public Color GetBackgroundColorTop(float initTimeChange)
+    {
+        float timeVal = initTimeChange + 2500;
+        if (timeVal >= 0 && timeVal < 10800)
+        {
+            fracColor = timeVal / 10800;
+            return Color.Lerp(colorsTime[0], colorsTime[2], fracColor);
+        }
+        else if (timeVal >= 10800 && timeVal < 27000)
+        {
+            fracColor = (timeVal - 10800) / 16200;
+            return Color.Lerp(colorsTime[2], colorsTime[4], fracColor);
+        }
+        else if (timeVal >= 27000 && timeVal < 32400)
+        {
+            fracColor = (timeVal - 27000) / 5400;
+            return Color.Lerp(colorsTime[4], colorsTime[6], fracColor);
+        }
+        else if (timeVal >= 32400 && timeVal < 43200)
+        {
+            fracColor = (timeVal - 32400) / 10800;
+            return Color.Lerp(colorsTime[6], colorsTime[8], fracColor);
+        }
+        else if (timeVal >= 43200 && timeVal < 54000)
+        {
+            fracColor = (timeVal - 43200) / 10800;
+            return Color.Lerp(colorsTime[8], colorsTime[10], fracColor);
+        }
+        else if (timeVal >= 54000 && timeVal < 62000)
+        {
+            fracColor = (timeVal - 54000) / 8000;
+            return Color.Lerp(colorsTime[10], colorsTime[12], fracColor);
+        }
+        else if (timeVal >= 62000 && timeVal < 75600)
+        {
+            fracColor = (timeVal - 62000) / 13600;
+            return Color.Lerp(colorsTime[12], colorsTime[14], fracColor);
+        }
+        else
+        {
+            fracColor = (timeVal - 75600) / 10800;
+            return Color.Lerp(colorsTime[14], colorsTime[16], fracColor);
+        }
+    }
+
+    public Color GetBackgroundColorBottom(float initTimeChange)
+    {
+        float timeVal = initTimeChange + 2500;
+        if (timeVal >= 0 && timeVal < 10800)
+        {
+            fracColor = timeVal / 10800;
+            return Color.Lerp(colorsTime[1], colorsTime[3], fracColor);
+        }
+        else if (timeVal >= 10800 && timeVal < 27000)
+        {
+            fracColor = (timeVal - 10800) / 16200;
+            return Color.Lerp(colorsTime[3], colorsTime[5], fracColor);
+        }
+        else if (timeVal >= 27000 && timeVal < 32400)
+        {
+            fracColor = (timeVal - 27000) / 5400;
+            return Color.Lerp(colorsTime[5], colorsTime[7], fracColor);
+        }
+        else if (timeVal >= 32400 && timeVal < 43200)
+        {
+            fracColor = (timeVal - 32400) / 10800;
+            return Color.Lerp(colorsTime[7], colorsTime[9], fracColor);
+        }
+        else if (timeVal >= 43200 && timeVal < 54000)
+        {
+            fracColor = (timeVal - 43200) / 10800;
+            return Color.Lerp(colorsTime[9], colorsTime[11], fracColor);
+        }
+        else if (timeVal >= 54000 && timeVal < 62000)
+        {
+            fracColor = (timeVal - 54000) / 8000;
+            return Color.Lerp(colorsTime[11], colorsTime[13], fracColor);
+        }
+        else if (timeVal >= 62000 && timeVal < 75600)
+        {
+            fracColor = (timeVal - 62000) / 13600;
+            return Color.Lerp(colorsTime[13], colorsTime[15], fracColor);
+        }
+        else
+        {
+            fracColor = (timeVal - 75600) / 10800;
+            return Color.Lerp(colorsTime[15], colorsTime[17], fracColor);
+        }
+    }
+
+    public Color GetMountainColor(float initTimeChange, int i)
+    {
+        float timeVal = initTimeChange + 2500;
+        if (timeVal >= 57000 && timeVal < 62000)
+        {
+            fracObjects = (timeVal - 57000) / 5000;
+            if (i == 0)
+            {
+                return Color.Lerp(mountainColors[0], mountainColors[3], fracObjects);
+            } else if (i == 1)
+            {
+                return Color.Lerp(mountainColors[1], mountainColors[4], fracObjects);
+            } else
+            {
+                return Color.Lerp(mountainColors[2], mountainColors[5], fracObjects);
+            }
+        }
+        else if (timeVal >= 23000 && timeVal < 29000)
+        {
+            fracObjects = (timeVal - 23000) / 6000;
+            if (i == 0)
+            {
+                return Color.Lerp(mountainColors[3], mountainColors[0], fracObjects);
+            }
+            else if (i == 1)
+            {
+                return Color.Lerp(mountainColors[4], mountainColors[1], fracObjects);
+            }
+            else
+            {
+                return Color.Lerp(mountainColors[5], mountainColors[2], fracObjects);
+            }
+        }
+        else if (timeVal >= 62000 && timeVal < 23000)
+        {
+            if (i == 0)
+            {
+                return mountainColors[3];
+            }
+            else if (i == 1)
+            {
+                return mountainColors[4];
+            }
+            else
+            {
+                return mountainColors[5];
+            }
+        } else
+        {
+            if (i == 0)
+            {
+                return mountainColors[0];
+            }
+            else if (i == 1)
+            {
+                return mountainColors[1];
+            }
+            else
+            {
+                return mountainColors[2];
+            }
+        }
+    }
+
+    public Color GetForegroundObjectColor(float initTimeChange)
+    {
+        float timeVal = initTimeChange + 2500;
+        if (timeVal >= 57000 && timeVal < 62000)
+        {
+            fracObjects = (timeVal - 57000) / 5000;
+            return Color.Lerp(Color.white, foregroundObjectColors[0], fracObjects);
+        }
+        else if (timeVal >= 23000 && timeVal < 29000)
+        {
+            return Color.Lerp(foregroundObjectColors[0], Color.white, fracObjects);
+        }
+        else if (timeVal >= 62000 && timeVal < 23000)
+        {
+            return foregroundObjectColors[0];
+        }
+        else
+        {
+            return Color.white;
+        }
     }
 }

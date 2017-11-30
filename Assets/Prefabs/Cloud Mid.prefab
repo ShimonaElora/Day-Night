@@ -53,6 +53,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0
+  colorNight: {r: 0, g: 0, b: 0, a: 0}
+  colorDay: {r: 0, g: 0, b: 0, a: 0}
 --- !u!212 &212244760168270960
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -86,7 +88,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300002, guid: cad6573764987df49a991a8344ed3195, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.8156863}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.641}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

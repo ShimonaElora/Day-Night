@@ -53,6 +53,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0
+  colorNight: {r: 0, g: 0, b: 0, a: 0}
+  colorDay: {r: 0, g: 0, b: 0, a: 0}
 --- !u!212 &212158306790702312
 SpriteRenderer:
   m_ObjectHideFlags: 1
