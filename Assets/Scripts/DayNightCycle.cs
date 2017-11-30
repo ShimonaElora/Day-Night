@@ -43,6 +43,9 @@ public class DayNightCycle : MonoBehaviour {
     private float fracObjects;
     private Color colorObjects;
 
+    private float[] randomTime;
+    private bool[] flicker;
+
     // Use this for initialization
     void Start () {
         timeOfDay = initTime * 60 * 60;
@@ -52,6 +55,8 @@ public class DayNightCycle : MonoBehaviour {
         moon.GetComponent<SpriteRenderer>().sprite = moonSprites[0];
         if (timeOfDay > 21600 && timeOfDay <= 43200)
         {
+            lights[0].GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.black);
+            lights[1].GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.black);
             fracSun = (timeOfDay - 21600) / 21600;
             ySun = Mathf.Lerp(transYMinSun, transYMaxSun, fracSun);
             if (ySun >= transYToggleSun)
@@ -71,6 +76,8 @@ public class DayNightCycle : MonoBehaviour {
             moon.GetComponent<Transform>().position = new Vector3(moon.GetComponent<Transform>().position.x, transYMinMoon, moon.GetComponent<Transform>().position.z);
         } else if (timeOfDay > 43200 && timeOfDay <= 64800)
         {
+            lights[0].GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.black);
+            lights[1].GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.black);
             fracSun = (timeOfDay - 43200) / 21600;
             ySun = Mathf.Lerp(transYMaxSun, transYMinSun, fracSun);
             hasSunRisen = true;
@@ -90,6 +97,8 @@ public class DayNightCycle : MonoBehaviour {
             moon.GetComponent<Transform>().position = new Vector3(moon.GetComponent<Transform>().position.x, transYMinMoon, moon.GetComponent<Transform>().position.z);
         } else if (timeOfDay <= 86400 && timeOfDay > 64800)
         {
+            lights[0].GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.yellow);
+            lights[1].GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.yellow);
             fracMoon = (timeOfDay - 64800) / 21600;
             yMoon = Mathf.Lerp(transYMinMoon, transYMaxMoon, fracMoon);
             if (yMoon >= transYToggleMoon)
@@ -107,6 +116,8 @@ public class DayNightCycle : MonoBehaviour {
             sun.GetComponentInChildren<Light>().intensity = 0;
         } else
         {
+            lights[0].GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.yellow);
+            lights[1].GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.yellow);
             fracMoon = timeOfDay / 21600;
             yMoon = Mathf.Lerp(transYMaxMoon, transYMinMoon, fracMoon);
             hasMoonRisen = true;
@@ -145,7 +156,29 @@ public class DayNightCycle : MonoBehaviour {
                 foregroundObjects[i].GetComponent<SpriteRenderer>().color = foregroundObjectColors[0];
             }
         }
-	}
+        randomTime = new float[4];
+        flicker = new bool[2];
+        randomTime[0] = Random.Range(59000, 62000);
+        randomTime[1] = Random.Range(60000, 63000);
+        randomTime[2] = Random.Range(75600, 86400);
+        randomTime[3] = Random.Range(76000, 85000);
+        int x = Random.Range(0, 2);
+        if (x == 0)
+        {
+            flicker[0] = true;
+            flicker[1] = false;
+        }
+        else if (x == 1)
+        {
+            flicker[0] = false;
+            flicker[1] = true;
+        }
+        else
+        {
+            flicker[0] = false;
+            flicker[1] = false;
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -155,6 +188,24 @@ public class DayNightCycle : MonoBehaviour {
         {
             timeOfDay = 0;
             day++;
+            randomTime[0] = Random.Range(59000, 62000);
+            randomTime[1] = Random.Range(60000, 63000);
+            randomTime[2] = Random.Range(75600, 86400);
+            randomTime[3] = Random.Range(76000, 85000);
+            int x = Random.Range(0, 2);
+            if (x == 0)
+            {
+                flicker[0] = true;
+                flicker[1] = false;
+            } else if (x == 1)
+            {
+                flicker[0] = false;
+                flicker[1] = true;
+            } else
+            {
+                flicker[0] = false;
+                flicker[1] = false;
+            }
         }
         if (day % 5 == 0 || day % 5 == 4)
         {
@@ -191,6 +242,33 @@ public class DayNightCycle : MonoBehaviour {
         if (timeOfDay >= 29500 && timeOfDay < 56000)
         {
             stars.SetActive(false);
+        }
+        for (int i = 0; i < 2; i++)
+        {
+            if(flicker[i])
+            {
+                if (timeOfDay >= randomTime[i] && timeOfDay <= randomTime[i] + 100)
+                {
+                    lights[i].GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.yellow);
+                } else if (timeOfDay > randomTime[i] + 100 && timeOfDay <= randomTime[i] + 200)
+                {
+                    lights[i].GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.black);
+                } else if (timeOfDay > randomTime[i] + 200 && timeOfDay < randomTime[i + 2])
+                {
+                    lights[i].GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.yellow);
+                }
+            } else
+            {
+                if (timeOfDay >= randomTime[i] && timeOfDay < randomTime[i + 2])
+                {
+                    lights[i].GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.yellow);
+                }
+            }
+
+            if (timeOfDay >= randomTime[i + 2])
+            {
+                lights[i].GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.black);
+            }
         }
     }
 
