@@ -209,19 +209,19 @@ public class DayNightCycle : MonoBehaviour {
         }
         if (day % 5 == 0 || day % 5 == 4)
         {
-            if (hasMoonSet)
+            if (moon.GetComponent<Transform>().position.y <= -1.58f && hasMoonSet)
             {
                 moon.GetComponent<SpriteRenderer>().sprite = moonSprites[0];
             }
         } else if (day % 5 == 1 || day % 5 == 3)
         {
-            if (hasMoonSet)
+            if (moon.GetComponent<Transform>().position.y <= -1.58f && hasMoonSet)
             {
                 moon.GetComponent<SpriteRenderer>().sprite = moonSprites[1];
             }
         } else if (day % 5 == 2)
         {
-            if (hasMoonSet)
+            if (moon.GetComponent<Transform>().position.y <= -1.58f && hasMoonSet)
             {
                 moon.GetComponent<SpriteRenderer>().sprite = moonSprites[2];
             }

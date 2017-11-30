@@ -10,6 +10,7 @@ public class CloudSpawnScript : MonoBehaviour {
     public GameObject Cloud;
     public Sprite[] cloudSprite;
     public Color[] cloudColors;
+    public Color colorGray;
 
     private bool cloudFrontGenerate;
     private bool cloudMidGenerate;
@@ -55,6 +56,7 @@ public class CloudSpawnScript : MonoBehaviour {
         cloudClone.GetComponent<CloudScript>().speed = speed[0];
         cloudClone.GetComponent<CloudScript>().colorDay = cloudColors[0];
         cloudClone.GetComponent<CloudScript>().colorNight = cloudColors[3];
+        cloudClone.GetComponent<CloudScript>().colorGray = colorGray;
 
         yield return new WaitForSeconds(20);
         cloudFrontGenerate = true;

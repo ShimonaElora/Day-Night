@@ -36,6 +36,9 @@ public class WeatherCycle : MonoBehaviour {
     private Color[] mountainColorsFinal;
     private Color foregroundObjectColorsFinal;
     private DayNightCycle dayNightCycle;
+    private int x;
+    private int numLightning;
+    private float[] randomTime;
 
     // Use this for initialization
     void Start() {
@@ -47,6 +50,7 @@ public class WeatherCycle : MonoBehaviour {
         backgroundColorsFinal = new Color[2];
         mountainColorsFinal = new Color[3];
         dayNightCycle = Background.GetComponent<DayNightCycle>();
+        randomTime = new float[2];
     }
 
     // Update is called once per frame
@@ -56,14 +60,19 @@ public class WeatherCycle : MonoBehaviour {
         {
             time = 0;
             timeFinal = 1000 * Random.Range(timeMin, timeMax);
-            //type = (int)Random.Range(0, 2);
-            type = 0;
+            type = (int)Random.Range(0, 2);
             weatherChanging = true;
             initTime = Time.time;
             if (type == 0)
             {
                 fog.SetActive(true);
                 rain.SetActive(true);
+                numLightning = Random.Range(0, 1);
+                x = 0;
+                for (int i = 0; i < randomTime.Length; i++)
+                {
+                    randomTime[i] = Random.Range(10, 20);
+                }
             } else
             {
                 snow.SetActive(true);
@@ -90,7 +99,7 @@ public class WeatherCycle : MonoBehaviour {
                 foregroundObjectColorsPresent = foregroundObjects[0].GetComponent<SpriteRenderer>().color;
                 if (DayNightCycle.timeOfDay < 12000 && DayNightCycle.timeOfDay >= 75000) //Night Time
                 {
-                    fog.GetComponent<ParticleSystem>().startColor = fogColor;
+                    //fog.GetComponent<ParticleSystem>().startColor = fogColor;
                     background.GetComponent<Renderer>().material.SetColor("_TopColor", Color.Lerp(backgroundColorsCurrent[0], backgroundColors[0], Time.deltaTime));
                     background.GetComponent<Renderer>().material.SetColor("_BottomColor", Color.Lerp(backgroundColorsCurrent[1], backgroundColors[1], Time.deltaTime));
                     for (int i = 0; i < 3; i++)
@@ -104,7 +113,7 @@ public class WeatherCycle : MonoBehaviour {
                 }
                 else if (DayNightCycle.timeOfDay >= 12000 && DayNightCycle.timeOfDay < 29500) //Sun Rise
                 {
-                    fog.GetComponent<ParticleSystem>().startColor = Color.Lerp(fog.GetComponent<ParticleSystem>().startColor, Color.white, Time.deltaTime);
+                    //fog.GetComponent<ParticleSystem>().startColor = Color.Lerp(fog.GetComponent<ParticleSystem>().startColor, Color.white, Time.deltaTime);
                     background.GetComponent<Renderer>().material.SetColor("_TopColor", Color.Lerp(backgroundColorsCurrent[0], backgroundColors[2], Time.deltaTime));
                     background.GetComponent<Renderer>().material.SetColor("_BottomColor", Color.Lerp(backgroundColorsCurrent[1], backgroundColors[3], Time.deltaTime));
                     for (int i = 0; i < 3; i++)
@@ -118,7 +127,7 @@ public class WeatherCycle : MonoBehaviour {
                 }
                 else if (DayNightCycle.timeOfDay >= 29500 && DayNightCycle.timeOfDay < 56000)//Day Time
                 {
-                    fog.GetComponent<ParticleSystem>().startColor = Color.white;
+                    //fog.GetComponent<ParticleSystem>().startColor = Color.white;
                     background.GetComponent<Renderer>().material.SetColor("_TopColor", Color.Lerp(backgroundColorsCurrent[0], backgroundColors[4], Time.deltaTime));
                     background.GetComponent<Renderer>().material.SetColor("_BottomColor", Color.Lerp(backgroundColorsCurrent[1], backgroundColors[5], Time.deltaTime));
                     for (int i = 0; i < 3; i++)
@@ -132,7 +141,7 @@ public class WeatherCycle : MonoBehaviour {
                 }
                 else if (DayNightCycle.timeOfDay >= 56000 && DayNightCycle.timeOfDay < 75000)//Sun set
                 {
-                    fog.GetComponent<ParticleSystem>().startColor = Color.Lerp(fog.GetComponent<ParticleSystem>().startColor, fogColor, Time.deltaTime);
+                    //fog.GetComponent<ParticleSystem>().startColor = Color.Lerp(fog.GetComponent<ParticleSystem>().startColor, fogColor, Time.deltaTime);
                     background.GetComponent<Renderer>().material.SetColor("_TopColor", Color.Lerp(backgroundColorsCurrent[0], backgroundColors[6], Time.deltaTime));
                     background.GetComponent<Renderer>().material.SetColor("_BottomColor", Color.Lerp(backgroundColorsCurrent[1], backgroundColors[7], Time.deltaTime));
                     for (int i = 0; i < 3; i++)
@@ -144,6 +153,30 @@ public class WeatherCycle : MonoBehaviour {
                         foregroundObjects[i].GetComponent<SpriteRenderer>().color = Color.Lerp(foregroundObjectColorsPresent, foregroundObjectColors[3], Time.deltaTime);
                     }
                 }
+                if (x > numLightning)
+                {
+                    lightning.SetActive(false);
+                }
+                if (x <= numLightning)
+                {
+                    if (Time.time - initTime > randomTime[0] || Time.time - initTime > randomTime[1])
+                    {
+                        lightning.GetComponent<Transform>().position = new Vector3(Random.Range(-6.5f, 6.5f), lightning.GetComponent<Transform>().position.y, lightning.GetComponent<Transform>().position.z);
+                        lightning.SetActive(true);
+                        background.GetComponent<Renderer>().material.SetColor("_TopColor", Color.white);
+                        background.GetComponent<Renderer>().material.SetColor("_BottomColor", Color.white);
+                        for (int i = 0; i < 3; i++)
+                        {
+                            mountains[i].GetComponent<SpriteRenderer>().color = Color.white;
+                        }
+                        for (int i = 0; i < foregroundObjects.Length; i++)
+                        {
+                            foregroundObjects[i].GetComponent<SpriteRenderer>().color = Color.white;
+                        }
+                        x++;
+                    }
+                } 
+                
                 initChangeBackTime = DayNightCycle.timeOfDay;
                 backgroundColorsFinal[0] = dayNightCycle.GetBackgroundColorTop(initChangeBackTime);
                 backgroundColorsFinal[1] = dayNightCycle.GetBackgroundColorBottom(initChangeBackTime);

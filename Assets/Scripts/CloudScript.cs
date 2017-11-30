@@ -7,6 +7,7 @@ public class CloudScript : MonoBehaviour {
     public float speed;
     public Color colorNight;
     public Color colorDay;
+    public Color colorGray;
     private Color colorPresent;
 
     private float frac;
@@ -51,7 +52,7 @@ public class CloudScript : MonoBehaviour {
         {
             if (Time.time - WeatherCycle.initTime < 25)
             {
-                color = Color.Lerp(GetComponent<SpriteRenderer>().color, colorNight, Time.deltaTime);
+                color = Color.Lerp(GetComponent<SpriteRenderer>().color, colorGray, Time.deltaTime);
                 GetComponent<SpriteRenderer>().color = color;
                 colorPresent = GetComponent<SpriteRenderer>().color;
             }
@@ -59,6 +60,7 @@ public class CloudScript : MonoBehaviour {
             {
                 frac = (DayNightCycle.timeOfDay - WeatherCycle.initChangeBackTime) / 2500;
                 color = Color.Lerp(colorPresent, GetColorCloud(WeatherCycle.initChangeBackTime), frac);
+                GetComponent<SpriteRenderer>().color = color;
             }
         }
     }
