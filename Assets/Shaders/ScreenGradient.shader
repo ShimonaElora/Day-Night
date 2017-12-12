@@ -58,7 +58,7 @@
 			OUT.position = UnityObjectToClipPos(IN.position);
 			OUT.uv = TRANSFORM_TEX(IN.uv, _MainTex);
 
-			float factor = mad(OUT.position.y, -0.5, 0.5);
+			float factor = mad(OUT.position.y, 0.5, 0.5);
 			factor *= 1 + _Offset*2;
 			factor -= _Offset;
 			factor = clamp(factor, 0, 1);

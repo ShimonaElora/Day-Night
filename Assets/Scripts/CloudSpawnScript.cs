@@ -58,7 +58,7 @@ public class CloudSpawnScript : MonoBehaviour {
         cloudClone.GetComponent<CloudScript>().colorNight = cloudColors[3];
         cloudClone.GetComponent<CloudScript>().colorGray = colorGray;
 
-        yield return new WaitForSeconds(20);
+        yield return new WaitForSeconds(100);
         cloudFrontGenerate = true;
     }
 
@@ -77,7 +77,7 @@ public class CloudSpawnScript : MonoBehaviour {
         cloudClone.GetComponent<CloudScript>().colorDay = cloudColors[1];
         cloudClone.GetComponent<CloudScript>().colorNight = cloudColors[4];
 
-        yield return new WaitForSeconds(50);
+        yield return new WaitForSeconds(200);
         cloudBackGenerate = true;
     }
 
@@ -96,7 +96,7 @@ public class CloudSpawnScript : MonoBehaviour {
         cloudClone.GetComponent<CloudScript>().colorDay = cloudColors[2];
         cloudClone.GetComponent<CloudScript>().colorNight = cloudColors[5];
 
-        yield return new WaitForSeconds(30);
+        yield return new WaitForSeconds(300);
         cloudMidGenerate = true;
     }
 }
