@@ -183,7 +183,7 @@ public class DayNightCycle : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         timeOfDay = timeOfDay + Time.deltaTime * speed * 100;
-        Debug.Log(timeOfDay);
+        //Debug.Log(timeOfDay);
         if (timeOfDay > 86400)
         {
             timeOfDay = 0;
